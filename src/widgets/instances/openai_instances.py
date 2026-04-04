@@ -713,7 +713,7 @@ class Cloudflare(BaseInstance):
             )
             logger.error(e)
             if self.row:
-                self.row.get_parent().unselect_all()
+                GLib.idle_add(self.row.get_parent().unselect_all)
             return {}
 
 class GenericOpenAI(BaseInstance):
