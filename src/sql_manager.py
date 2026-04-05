@@ -67,13 +67,15 @@ def dict_to_metadata_string(data:dict) -> str:
     if data.get('prompt_eval_count') and data.get('prompt_eval_duration'):
         metadata_parameters[_('Prompt Eval Count')] =  _('{} tokens').format(data.get('prompt_eval_count'))
         metadata_parameters[_('Prompt Eval Duration')] = nanoseconds_to_timestamp(data.get('prompt_eval_duration'))
-        prompt_eval_rate = data.get('prompt_eval_count') / (data.get('prompt_eval_duration') / (10**9))
-        metadata_parameters[_('Prompt Eval Rate')] = _('{} tokens/s').format(round(prompt_eval_rate, 2))
+        if data.get('prompt_eval_duration') > 0:
+            prompt_eval_rate = data.get('prompt_eval_count') / (data.get('prompt_eval_duration') / (10**9))
+            metadata_parameters[_('Prompt Eval Rate')] = _('{} tokens/s').format(round(prompt_eval_rate, 2))
     if data.get('eval_count') and data.get('eval_duration'):
         metadata_parameters[_('Eval Count')] = _('{} tokens').format(data.get('eval_count'))
         metadata_parameters[_('Eval Duration')] = nanoseconds_to_timestamp(data.get('eval_duration'))
-        eval_rate = data.get('eval_count') / (data.get('eval_duration') / (10**9))
-        metadata_parameters[_('Eval Rate')] = _('{} tokens/s').format(round(eval_rate, 2))
+        if data.get('eval_duration') > 0:
+            eval_rate = data.get('eval_count') / (data.get('eval_duration') / (10**9))
+            metadata_parameters[_('Eval Rate')] = _('{} tokens/s').format(round(eval_rate, 2))
     metadata_result = ['| {} | {} |'.format(_('Metric'), _('Value')), '| ---- | ---- |']
     metadata_result += ['| {} | {} |'.format(k, vl) for k, vl in metadata_parameters.items() if vl]
     return '\n'.join(metadata_result)
